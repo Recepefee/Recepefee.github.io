@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title><? STR(global.title) ?></title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="description" content="<? STR(global.description) ?>">
+		<link rel="stylesheet" href="style.css">
+	</head>
+	<body>
+		<div class="container">
+			<header>
+				<nav>
+					<a href="/">Ana Sayfa</a>
+					<a href="/about">Hakkımda</a>
+				</nav>
+				<div class="dashed"></div>
+				<h1><? STR(global.title) ?></h1>
+				<p><? STR(global.description) ?></p>
+			</header>
+
+			<main>
+				<? CONTENT() ?>
+			</main>
+
+			<? INCLUDE("footer") ?>
+		</div>
+	</body>
+</html>
+

@@ -1,0 +1,10 @@
+<footer>
+	<div class="dashed"></div>
+	<p>
+		<? for (size_t i = 0; i < global.socials.count; ++i) { ?>
+			<a href="<? STR(global.socials.items[i]->url) ?>"> <? STR(global.socials.items[i]->title) ?></a>
+			<? if (i < global.socials.count - 1) STR(" | "); ?>
+		<? } ?>
+	</p>
+	<p class="small">© 2025 Recep EFE - Powered by <a href="https://github.com/hanion/mite">mite</a></p>
+</footer>
