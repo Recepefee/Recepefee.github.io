@@ -2,7 +2,7 @@
 page->layout = "post";
 page->title  = "Kablosuz Şarj Destekli Akıllı Otopark Sistemi";
 page->description = "Tübitak 2209-A Kapsamında Desteklenen Proje";
-page->date ="2025-08-12";
+page->date ="12/08/2025";
 SET_PROJECT();
 ---
 
@@ -11,8 +11,8 @@ Bu proje ile Tübitak 2209-A kapsamında "1919B012424414" başvuru numaralı pro
 
 
 <figure>
-<img src="tubitak.png" alt="tubitak logo">
-<figcaption>Tubitak</figcaption>
+  <img src="ana_28_0.png" alt="tubitak logo" width="250" height="auto">
+  <figcaption></figcaption>
 </figure>
 
 
@@ -21,26 +21,28 @@ Bu projenin amacı otoparklarda yaşanan problemlere çözüm getirmektir. En s�
 Bu projede otoparklarda oluşan yakıt ve zaman kaybını azaltarak araç kullanıcılarının en verimli şekilde park yeri bulmasını hedeflenmiştir. Elektrikli araç kullanıcılarına zaman ve yakıt tasarrufunun yanında kablosuz şarj desteği sunularak araçlarını en iyi şekilde kullanmaları hedeflenmiştir. Projemizin amaçlarından biri olan kablosuz şarj desteği ile elektrikli araç kullanımının arttırılması hedeflenmiştir. 
 
  <figure>
-<img src="sekil1.1.png" alt="akıllı_otopark_genel_hali">
+<img src="sekil1.1.png" alt="akıllı_otopark_genel_hali"width="450" height="auto">
 <figcaption><strong>Şekil 1.1</strong> Kablosuz Şarj Destekli Akıllı Otoparkın Genel Hali</figcaption>
 </figure>
 
 Şekil 1.1’de yer alan görselde Kablosuz Şarj Destekli Akıllı Otoparkın genel hali verilmiştir. Otopark prototipi beş araç için hazırlanmıştır. Park alanlarından bir tanesi engelli park alanı olarak ayrılmıştır. Bu ayrılan alanda engelli araç sahipleri için normal bir park alanının yaklaşık 1.2 katı genişliğe sahiptir. Engelli park alanına daha geniş bir alan bırakılarak daha rahat manevra hakkı sunulmuştur. Aynı zamanda bu alan sayesinde araçta bulunan tekerlekli sandalye vb. gibi eşyalar daha rahat araca yüklenip alınabilmektedir.
 Otoparkta yer alan park alanları boş iken mavi ışık yanmaktadır.
  
-  Şekil 1.2 Kablosuz Şarj Destekli Akıllı Otoparkın Doluluk Oranı Hakkında Bilgi Veren Giriş Ekranı
+ <figure>
+<img src="sekil1.2.png" alt="akıllı_otopark_giris_ekrani"width="450" height="auto">
+<figcaption><strong>Şekil 1.2</strong> Kablosuz Şarj Destekli Akıllı Otoparkın Doluluk Oranı Hakkında Bilgi Veren Giriş Ekranı</figcaption>
+</figure>
 Şekil 1.2’de yer alan ekran üzerinden araç kullanıcılarına park alanlarının doluluğu hakkında bilgi verilmektedir. Bu ekran boş park alanlarını sayısal olarak kullanıcılara sunmaktadır. Kapının girişinde yer alan IR sensör aracı algılar ve giriş kapısının açılması için Arduino MEGA’ya sinyali gönderir. Arduino MEGA gelen sinyalle servo motoru harekete geçirir. Servo motor araçların girişi için 90 derece açılır, tanımlanan süre kapsamında açık kalır ve geri eski konumuna dönmektedir. 
 
-
-
-
-
-
-
+ <figure>
+<img src="sekil1.3.png" alt="akıllı_otopark_genel"width="450" height="auto">
+<figcaption><strong>Şekil 1.3</strong> Kablosuz Şarj Destekli Akıllı Otoparkın Genel Çalışması</figcaption>
+</figure>
+ <figure>
+<img src="sekij1.4.png" alt="akıllı_otopark_blok_diyagram"width="450" height="auto">
+<figcaption><strong>Şekil 1.4</strong> Kablosuz Şarj Destekli Akıllı Otoparkın Genel Çalışmasının Blok Diyagramı</figcaption>
+</figure>
  
-	  Şekil 1.3 Kablosuz Şarj Destekli Akıllı Otoparkın Genel Çalışması
- 
-	  Şekil 1.4 Kablosuz Şarj Destekli Akıllı Otoparkın Genel Çalışmasının Blok Diyagramı
 Kablosuz Şarj Destekli Akıllı Otopark yapısında aşağıda yer alan elektronik komponentleri kapsamaktadır.
 - Arduino Mega 2560 R3
 - HC-SR04 Ultrasonik Mesafe Sensörü
@@ -59,20 +61,26 @@ Kablosuz Şarj Destekli Akıllı Otopark yapısında aşağıda yer alan elektro
 
 
 Otopark alanlarında kullanılan mesafe sensörü araç kullanıcılarının park alanlarına doğru park etmeleri için yaklaşması gereken mesafeyi belirtmektedir. Mesafe sensörleri sayesinde araç sahiplerinin duvara ve kolonlara çarpmaması hedeflenmiştir. Belirlenen sınırların dışında yaklaşan araçlar sistemde kullanılan buzzer sayesinde uyarılmaktadır. Park alanlarında kullanılan RGB ledler ağırlık sensörleri ile koordine çalışmaktadır. Park alanlarında iki adet ağırlık sensörü bulunur. Bu sensörlerin amacı park alanında araç olup olmadığını algılamak ve araçların doğru park etmesine yardımcı olmaktır. Kullanılan ağırlık sensörlerinin üzerine araçların tekerlekleri doğru bir şekilde getirilmesi gerekmektedir. Araçların doğru park işlemini gerçekleştirmesi için iki tekerinde ağırlık sensörüne kuvvet uygulaması gerekir. Eğer tekerlerden sadece biri ağırlık sensörüne kuvvet uygularsa hatalı park olarak değerlendirilir. Ağırlık sensörlerinin yerleştirildiği konum ve alan, park alanına girecek araçların boyutları dikkate alınarak tasarlanmıştır. Tekerleğin kuvvet uygulayacağı alan ortalama bir tekerin eninin yaklaşık 3 katı kadardır. Bu alanın herhangi bir yüzeyine uygulanan kuvvet algılanmaktadır. Ağırlık sensörlerinin ikisine de uygulanan kuvvet yoksa park alanında yer alan led mavi, ikisinden birine uygulanan kuvvet algılanırsa kırmızı, ikisinde de kuvvet algılanırsa yeşil ışık yanmaktadır. Hatalı park işleminin olduğu park alanlarının bilgisi otoparktaki görevli tarafından görülmektedir. Otopark görevlisi hatalı park düzeltilmezse gerekli uyarıları araç sahibine yapmaktadır.
-
-
-
-
- 
-	  Şekil 1.5 Kablosuz Şarj Destekli Akıllı Otoparkta Yer Alan Kablosuz Şarj İstasyonu
- 
-Şekil 1.6 Kablosuz Şarj Destekli Akıllı Otoparkta Yer Alan Kablosuz Şarj İstasyonunun Blok Diyagramı
+ <figure>
+<img src="sekil1.5.png" alt="e_arac_istasyon"width="450" height="auto">
+<figcaption><strong>Şekil 1.5</strong> Kablosuz Şarj Destekli Akıllı Otoparkta Yer Alan Kablosuz Şarj İstasyonu</figcaption>
+</figure> <figure>
+<img src="sekil1.6.png" alt="e_arac_blok_diyagram"width="450" height="auto">
+<figcaption><strong>Şekil 1.6</strong> Kablosuz Şarj Destekli Akıllı Otoparkta Yer Alan Kablosuz Şarj İstasyonunun Blok Diyagramı</figcaption>
+</figure>
 
 Şekil 1.5’te yer alan görselde elektrikli araçlar için kablosuz şarj istasyonu verilmiştir. Görselde yer alan araç bir elektrikli araç prototipidir. Araç üzerinde yer alan batarya TP-4056 Şarj Modülü ile şarj olmaktadır. Park alanında kullanılan XKT-408 Kablosuz Şarj Modülü alıcı ve verici olarak iki modülden oluşmaktadır. Verici modül Arduino Mega üzerinden 5V ile beslenmektedir, bu modül park alanına sabitlenmiştir. Alıcı modül ise aracın alt kısmına yerleştirilmiştir. Kablosuz şarj işleminin başlaması için iki kıstas vardır. Birincisi araç park alanına doğru park işlemini gerçekleştirecek, ikincisi araç sahibi yetkili kart ile şarj işlemini başlatacaktır. Şarj işleminin mevcut durumu ve bataryanın doluluk oranı park alanında yer alan ekran üzerinden verilmiştir. Bataryanın doluluk oranını öğrenmek için ESP8266 kullanılmıştır. Kullanılan ESP8266 bataryadan aldığı voltaj bilgisini ESP-NOW sayesinde kablosuz olarak park alanında kullanılan ESP-WROOM-32 ye göndermektedir. ESP-WROOM-32 aldığı voltaj bilgisini içerisindeki referans voltaj değerine göre hesaplayıp ekran üzerinden kullanıcılara yansıtmaktadır.
  
-Şekil 1.7 Şarj İşlemi Tamamlanmış Elektrikli Araca Ait Ekran 
+</figure> <figure>
+<img src="sekil1.7.png" alt="e_arac_sarj_tamam"width="450" height="auto">
+<figcaption><strong>Şekil 1.7</strong> Şarj İşlemi Tamamlanmış Elektrikli Araca Ait Ekran </figcaption>
+</figure>
 
 Araç sahipleri istedikleri zaman şarj işlemini sonlandırmaktadırlar. Eğer araç %100 batarya kapasitesine ulaşırsa istasyon şarj işlemini otomatik olarak sonlandırmaktadır. Aynı zamanda Kablosuz Şarj İstasyonu kendine ait simge ile kullanıcılara yardımcı olmaktadır.
 Proje fikrimizi destekleyen TÜBİTAK’a teşekkürlerimi sunarım. Proje aşamasında gerekli bilgi ve desteği sağlayan Doç. Dr. Rıdvan DEMİR’e teşekkürlerimi sunarım. Bu projede çalışma arkadaşlarım olan Tarık Talha KILIF ve Ali YALÇIN’a teşekkür ederim.
 
-<a href="Bitirme_Projesi_Tezi.pdf" target="_blank">Bitirme Tezi</a>
+<a href="Bitirme_Projesi_Tezi.pdf" target="_blank">Bitirme Tezi</a>  
+
+<a href="Bitirme Projesi Posterİ.pdf" target="_blank">Bitirme Projesi Posteri</a>  
+
+<a href="4.AR-GE PROJE PAZARI.pdf" target="_blank">4.AR-GE Proje Pazarı Posteri</a>  

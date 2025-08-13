@@ -2,10 +2,8 @@
 global.url = "https://recepefee.github.io";
 global.title = "Recep EFE";
 global.description = "Elektrik-Elektronik Mühendisi";
-global.favicon_path = "/kafam.png";
+global.favicon_path = "sigorta_64x64.png";
 
-ADD_PROJECT("bitirme projesi", "bir şeyler yaptım", "/proje/bitirme");
-ADD_PROJECT("ikinci proje", "açıklama", "/post/ikinci_proje_postu");
 
 ADD_SOCIAL("github", "https://github.com/Recepefee");
 ADD_SOCIAL("linkedin", "https://www.linkedin.com/in/recep-efe/");

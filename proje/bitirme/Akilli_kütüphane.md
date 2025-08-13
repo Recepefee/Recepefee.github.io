@@ -1,50 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8">
-		<title>Akıllı Kütüphane Otomasyon Sistemi - Recep EFE</title>
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<meta name="description" content="Elektrik-Elektronik Mühendisi">
-		<link rel="stylesheet" href="/style.css">
-		<link rel="icon" type="image/png" href="sigorta_64x64.png"/>
-	</head>
-	<body>
-		<div class="container">
-			<header>
-				<nav class="site-nav">
-					<a href="/">Ana Sayfa</a>
-					<a href="/about">Hakkımda</a>
-				</nav>
-				<div class="dashed"></div>
-
-				<h1>Akıllı Kütüphane Otomasyon Sistemi</h1>
-				<p class="date">11/01/2024</p>
-
-			</header>
-
-			<main class="content">
-<p>
+---
+page->layout = "post";
+page->title  = "Akıllı Kütüphane Otomasyon Sistemi";
+page->description = "Görüntü İşleme ile Optimizasyon";
+page->date ="11/01/2024";
+SET_PROJECT();
+---
 Bu projede yürütücü olarak görev yapılmıştır ve 2024 yılında gerçekleşen 3.AR-GE Proje pazarı kapsamında Erzincan'da gerçekleşen etkinliğe katılınmıştır.
 Bu projede amacımız kütüphane içerisinde ders çalışan öğrencilerin zaman ve mekân verimliliğini arttırmaktır. Kütüphanede ki gereksiz yer işgallerini önlemek. Kütüphanenin kullanışının ve amacının verimini artırmak. Bilgiye daha kolay erişebilirlik sağlamak. Kütüphanenin sürekliliğini ve sirkülasyonunu sağlamak. Bilgiye ulaşımın kolaylaşmasıyla toplumsal bilginin artarak ülkenin gelişme düzeyinin artması hedeflenmektedir. Ayrıca ar-ge ofislerindeki gelişime katkı sağlamak da amaçlanmaktadır.
-</p>
 
-<p>
 Bu projede amacımız kütüphane içerisinde ders çalışan öğrencilerin zaman ve mekân verimliliğini arttırmaktır. Kütüphanede ki gereksiz yer işgallerini önlemek. Kütüphanenin kullanışının ve amacının verimini artırmak. Bilgiye daha kolay erişebilirlik sağlamak. Kütüphanenin sürekliliğini ve sirkülasyonunu sağlamaktır. Bilgiye ulaşımın kolaylaşmasıyla toplumsal bilginin artarak ülkenin gelişme düzeyinin artması hedeflenmektedir.
 Akıllı kütüphane sistemleri, kütüphanelerin işleyişini ve kullanıcı deneyimini geliştirmek için çeşitli teknolojileri kullanan kapsamlı çözümlerdir. Bu sistemler, kütüphanelerin kitap ve diğer materyalleri organize etmesine, yönetmesine ve kullanıcıların bunlara erişmesini kolaylaştırmasına yardımcı olur. Mevcut literatürde kütüphane otomasyon sistemleri kitap kataloglama, ödünç verme, iade, gecikme ücreti hesaplama ve kullanıcı hesaplarını yönetme gibi kütüphane işlevlerini otomatikleştirmek için kullanılır. Mevcut literatürde ana problem öğrencilerin kütüphanede istediği zaman da yer bulamamalarıdır. Öğrenciler kütüphaneye gitmeden kütüphanenin boşluk oranını bildiği taktirde zaman kayıpları en aza inecektir.
 Projemizde kullanmayı planladığımız yöntemin ana süreci, yapay sinir ağları kullanılarak yapılan nesne tanıma algoritmaları ve görüntü işleme ile masaların boş veya dolu olduğunun tespitine dayanır Görüntü işleme ve yapay sinir ağları kullanmanın en büyük avantajı, nesne tanıma için güçlü yöntemler ve araçlar sunmasıdır. Projemizde YOLOv5 derin öğrenme modeli tercih edilecektir. YOLOv5, Backbone, Neck ve Head olmak üzere üç ana katmandan oluşan bir yapay sinir ağı mimarisi kullanır. YOLOv5 hızlı ve doğru, kullanımı kolay olması ve önceden eğitilmiş modellerin mevcut olması yönüyle avantajlıdır. Tüm bu nesne tanıma proseslerinden elde edilen eğitim verilerini Nvidia Jetson Nano geliştirme kartına göndermek ve çıkarım performansını en üst düzeye çıkarmak için TensorRT ve DeepStream SDK kurulmalıdır. Nvidia Jetson Nano’nun GPU ve CUDA çekirdekleri kullanılarak hızlandırılan algoritmalarda tanınan insan, masa üzerinde bulunan defter ve kıyafetlerin sayısına göre kütüphanenin boşluk oranı, sunucu olarak tanımlanan bilgisayara ve tasarlanan mobil uygulamaya gönderilecektir. Bu sayede kütüphane kullanıcıları, zaman kaybetmeden hangi kütüphane boşsa ona gidecektir.
 Projemizde kullanmayı planladığımız yöntemin ana süreci, yapay sinir ağları kullanılarak yapılan nesne tanıma algoritmaları ve görüntü işleme ile masaların boş veya dolu olduğunun tespitine dayanır.
 Görüntü işleme alanında en yaygın kullanılan yöntemlerden birisi Convolutional Neural Networks (CNN)’dir. CNN’ler görüntülerdeki özellikleri belirlemek için özel olarak tasarlanmış katmanlardan oluşur. Bu katmanlar görüntülerdeki özellikleri ayrıştırmak ve tanımak için bir araya getirilir. Nesne tanıma işlemini hızlı bir şekilde gerçekleştirmek ve algoritmaları gerçeklemek için yazılan kodlar, Python kullanılarak Nvidia Jetson Nano geliştirme kartına implementasyonu sağlanacaktır.  Kütüphaneye yerleştirilecek kamerayı, kütüphaneye yerleştirmeden önce kütüphanede bulunan nesnelerin sınıflandırılmasının sağlamak için nesneler yapay sinir ağları yardımıyla veri eğitimi setine gönderilerek tanıtılmalıdır. R-CNN algoritmasında veri eğitim süresi yaklaşık 84 saat, tahmin süresi 47 saniyedir.  Projemizde YOLOv5 derin öğrenme modeli tercih edilecektir. YOLOv5, Backbone, Neck ve Head olmak üzere üç ana katmandan oluşan bir yapay sinir ağı mimarisi kullanır. YOLOv5 hızlı ve doğru, kullanımı kolay olması ve önceden eğitilmiş modellerin mevcut olması yönüyle avantajlıdır. Nvidia Jetson Nano MQQT haberleşme modülü ile sunucu ile paylaşılacaktır. MQQT haberleşme akıllı cihazlar, IoT cihazları gibi kaynakları arasında kullanılan hafif bir haberleşme protokolüdür. MQQT haberleşme kullanılarak sunucu ile veri paylaşımı yapabilmek için sunucun işletim sistemine MQQT broker’ı kurulmalıdır. Hazırlanan eğitim verileri, Python’da yazılan veri yayıncı betiği ile MQQT brokera bağlanılır. Verileri alabilmek için ise sunucuda çalışan bir veri alıcı betiği de yazılmalıdır. Eclipse Mosquitto olarak da bilinen Mosquitto dağıtımı, popüler ve yaygın olarak kullanılan açık kaynaklı bir MQTT dağıtımıdır. MQTT protokolünü kullanarak hafif ve verimli mesajlaşma için özel olarak tasarlanmıştır.
 Bu proje tasarım aşamasında maddi olanaklardan dolayı kalmıştır. Projenin güncellenerek ve iyileştirilerek hayata geçirilmesi planlanmaktadır.
-</p>
+
 <a href="3.AR-GE PROJE PAZARI .pdf" target="_blank">3.AR-GE Proje Pazarı Posteri</a>
-			</main><footer>
-	<div class="dashed"></div>
-	<p>
-			<a href="https://github.com/Recepefee">github</a> | 
-			<a href="https://www.linkedin.com/in/recep-efe/">linkedin</a>
-	</p>
-	<p class="small">© 2025 Recep EFE - Powered by <a href="https://github.com/hanion/mite">mite</a></p>
-</footer>
-		</div>
-	</body>
-</html>
+
