@@ -13,7 +13,7 @@ page->layout = "home";
 
 <br>
 
-## Projeler
+## PROJELER
 
 <ul class="post-list">
     <? for (int i = 0; i < global.projects.count; i++) { ?>
@@ -26,5 +26,14 @@ page->layout = "home";
     <? } ?>
 </ul>
 
-
-
+## NASIL?
+<ul class="post-list">
+    <? for (int i = 0; i < global.posts.count; i++) { ?>
+        <li>
+            <a href="<? STR(global.posts.items[i]->url) ?>">
+                <? STR(global.posts.items[i]->title) STR(" - ") ?> 
+                <? STR(global.posts.items[i]->description) ?>
+            </a>
+        </li>
+    <? } ?>
+</ul>
