@@ -1,15 +1,15 @@
 :root {
-	--headings: #1E40AF;        /* keep — strong and bright */
-	--links: #14B8A6;           /* slightly lighter, stands apart from headings */
-	--highlight: #FACC15;       /* good as-is */
-	--bg: #1E293B;              /* good */
-	--bg-secondary: #334155;    /* just a bit darker than before */
-	--text: #F1F5F9;            /* slightly lighter for readability */
-	--text-secondary: #94A3B8;  /* more subtle secondary tone */
-	--code-text: #38BDF8;       /* bit softer than links */
-	--share-text: #64748B;         /* dimmed for footer or less important */
+	--headings: #007acc;        /* keep — strong and bright */
+	--links: #005fa3;           /* slightly lighter, stands apart from headings */
+	--highlight: #F4B400;       /* good as-is */
+	--bg: #f9f9f9;              /* good */
+	--bg-secondary: #e5e5e5;    /* just a bit darker than before */
+	--text: #333333;            /* slightly lighter for readability */
+	--text-secondary: #555555;  /* more subtle secondary tone */
+	--code-text: #007acc;       /* bit softer than links */
+	--share-text: #777777;         /* dimmed for footer or less important */
 	--color-accent: var(--links);
-	--color-accent-active: #0D9488;
+	--color-accent-active: #004477;
 	--max-width: 760px;
 }
 
