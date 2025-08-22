@@ -16,6 +16,7 @@ page->layout = "home";
 ## PROJELER
 
 <? sort_pages_alt(&global.posts); ?>
+<? sort_pages_alt(&global.projects); ?>
 
 <ul class="post-list">
     <? for (int i = 0; i < global.projects.count; i++) { ?>
