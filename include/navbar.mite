@@ -1,0 +1,12 @@
+<nav class="site-nav">
+	<div class="nav-left">
+		<a href="/">Ana Sayfa</a>
+		<a href="/about">Hakkımda</a>
+	</div>
+	<div class="nav-right">
+		<img src="/sigorta_64x64.png" alt="Logo" style="height:38px; vertical-align:middle;">
+	</div>
+</nav>
+<div class="dashed"></div>
+
+

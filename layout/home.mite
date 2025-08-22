@@ -10,12 +10,9 @@
 	</head>
 	<body>
 		<div class="container">
+			<? INCLUDE("navbar") ?>
+
 			<header>
-				<nav>
-					<a href="/">Ana Sayfa</a>
-					<a href="/about">Hakkımda</a>
-				</nav>
-				<div class="dashed"></div>
 				<h1><? STR(global.title) ?></h1>
 				<p><? STR(global.description) ?></p>
 			</header>
