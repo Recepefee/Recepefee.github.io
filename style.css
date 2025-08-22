@@ -1,6 +1,6 @@
 :root {
 	--headings: #2D7DD2;        /* keep — strong and bright */
-	--links: #4BA3F2;           /* slightly lighter, stands apart from headings */
+	--links: #F2994A;           /* slightly lighter, stands apart from headings */
 	--highlight: #F4B400;       /* good as-is */
 	--bg: #1F232A;              /* good */
 	--bg-secondary: #2A2F37;    /* just a bit darker than before */
@@ -9,7 +9,7 @@
 	--code-text: #76B7E1;       /* bit softer than links */
 	--share-text: #8A8F99;         /* dimmed for footer or less important */
 	--color-accent: var(--links);
-	--color-accent-active: #336699 ;
+	--color-accent-active: #CC7A33 ;
 	--max-width: 760px;
 }
 
