@@ -1,4 +1,6 @@
----
+```c
+page->layout = "home";
+
 global.url = "https://recepefee.github.io";
 global.title = "Recep EFE";
 global.description = "Elektrik-Elektronik Mühendisi";
@@ -8,8 +10,7 @@ global.favicon_path = "/sigorta_64x64.png";
 ADD_SOCIAL("github", "https://github.com/Recepefee");
 ADD_SOCIAL("linkedin", "https://www.linkedin.com/in/recep-efe/");
 
-page->layout = "home";
----
+```
 
 <br>
 
