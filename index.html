@@ -6,7 +6,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta name="description" content="Elektrik-Elektronik Mühendisi">
 		<link rel="stylesheet" href="style.css">
-		<link rel="icon" type="image/png" href="/sigorta_64x64.png"/>
+		<link rel="icon" type="image/png" href="/sigorta_64x64.png"/><script> if (localStorage.getItem("theme") === "alt-theme") { document.documentElement.classList.add("alt-theme"); } </script>
 	</head>
 	<body>
 		<div class="container"><nav class="site-nav">
@@ -14,8 +14,21 @@
 		<a href="/">Ana Sayfa</a>
 		<a href="/about">Hakkımda</a>
 	</div>
-	<div class="nav-right">
-		<img src="/sigorta_64x64.png" alt="Logo" style="height:38px; vertical-align:middle;">
+	<div class="nav-right"><a id="theme-toggle" style="cursor:pointer;">
+  <img src="/sigorta_64x64.png" alt="Toggle theme" style="height:38px; vertical-align:middle;">
+</a>
+
+<script>
+const toggleBtn = document.getElementById("theme-toggle");
+toggleBtn.addEventListener("click", () => {
+	document.documentElement.classList.toggle("alt-theme");
+	if (document.documentElement.classList.contains("alt-theme")) {
+		localStorage.setItem("theme", "alt-theme");
+	} else {
+		localStorage.removeItem("theme");
+	}
+});
+</script>
 	</div>
 </nav>
 <div class="dashed"></div>

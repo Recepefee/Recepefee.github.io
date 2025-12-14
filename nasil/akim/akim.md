@@ -7,7 +7,7 @@ SET_POST();
 ---
 
 **Akım:** Elektrik akımı, bir iletkenin kesitinden birim zamanda geçen net elektrik yükü miktarıdır. Birimi Amper'dir (A). Bir amper, bir saniyede geçen bir Coulomb'luk yüke eşittir.
-</figure> <figure>
+<figure>
 <img src="akım1.png" alt="bakır-kabloda-akım"width="400" height="auto">
 <figcaption><strong>Şekil 1.1</strong> Bakır Kabloda İletilen Akım </figcaption>
 </figure>

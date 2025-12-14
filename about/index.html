@@ -2,29 +2,38 @@
 <html lang="en">
 	<head>
 		<meta charset="UTF-8">
-		<title>Hakkımda - !!!global!title!!!</title>
+		<title>Hakkımda - Recep EFE</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<meta name="description" content="!!!global!description!!!">
+		<meta name="description" content="Elektrik-Elektronik Mühendisi">
 		<link rel="stylesheet" href="/style.css">
-		<link rel="icon" type="image/png" href=""/>
+		<link rel="icon" type="image/png" href="/sigorta_64x64.png"/><script> if (localStorage.getItem("theme") === "alt-theme") { document.documentElement.classList.add("alt-theme"); } </script>
 	</head>
 	<body>
-		<div class="container"><nav class="site-nav">
+		<div class="container"><nav class="site-nav">
 	<div class="nav-left">
 		<a href="/">Ana Sayfa</a>
 		<a href="/about">Hakkımda</a>
 	</div>
-	<div class="nav-right">
-		<img src="/sigorta_64x64.png" alt="Logo" style="height:38px; vertical-align:middle;">
+	<div class="nav-right"><a id="theme-toggle" style="cursor:pointer;">
+  <img src="/sigorta_64x64.png" alt="Toggle theme" style="height:38px; vertical-align:middle;">
+</a>
+
+<script>
+const toggleBtn = document.getElementById("theme-toggle");
+toggleBtn.addEventListener("click", () => {
+	document.documentElement.classList.toggle("alt-theme");
+	if (document.documentElement.classList.contains("alt-theme")) {
+		localStorage.setItem("theme", "alt-theme");
+	} else {
+		localStorage.removeItem("theme");
+	}
+});
+</script>
 	</div>
 </nav>
 <div class="dashed"></div>
-
-
 			<header>
 				<h1>Hakkımda</h1>
-
-
 
 			</header>
 
@@ -36,20 +45,19 @@ Merhaba ben Recep EFE Elektrik-Elektronik Mühendisiyim. PLC Programlama, Endüs
 <p>
 CV'im ekte verilmiştir.
 </p>
-<a href="Recep_EFE_CV_telnosuz.pdf" target="_blank">Recep EFE Cv</a>
+<a href="Recep_EFE_Cv.pdf" target="_blank">Recep EFE Cv</a>
 <p>
 İletişim : eferecep3840@gmail.com
 </p>
 
-			</main>
-<footer>
+			</main><footer>
 	<div class="dashed"></div>
 	<p>
+			<a href="https://github.com/Recepefee">github</a> | 
+			<a href="https://www.linkedin.com/in/recep-efe/">linkedin</a>
 	</p>
 	<p class="small">© 2025 Recep EFE - Powered by <a href="https://github.com/hanion/mite">mite</a></p>
 </footer>
 		</div>
 	</body>
 </html>
-
-

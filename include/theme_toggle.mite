@@ -1,0 +1,15 @@
+<a id="theme-toggle" style="cursor:pointer;">
+  <img src="/sigorta_64x64.png" alt="Toggle theme" style="height:38px; vertical-align:middle;">
+</a>
+
+<script>
+const toggleBtn = document.getElementById("theme-toggle");
+toggleBtn.addEventListener("click", () => {
+	document.documentElement.classList.toggle("alt-theme");
+	if (document.documentElement.classList.contains("alt-theme")) {
+		localStorage.setItem("theme", "alt-theme");
+	} else {
+		localStorage.removeItem("theme");
+	}
+});
+</script>

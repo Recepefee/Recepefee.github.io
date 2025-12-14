@@ -4,7 +4,7 @@
 		<a href="/about">Hakkımda</a>
 	</div>
 	<div class="nav-right">
-		<img src="/sigorta_64x64.png" alt="Logo" style="height:38px; vertical-align:middle;">
+		<? INCLUDE("theme_toggle") ?>
 	</div>
 </nav>
 <div class="dashed"></div>

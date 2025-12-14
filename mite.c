@@ -1,4 +1,4 @@
-/* mite 1.2.3
+/* mite 1.4.3
 
 [mite](https://github.com/hanion/mite)
 
@@ -101,6 +101,17 @@ source: https://github.com/hanion/hanion.github.io
 #define INCLUDE_DIR "./include"
 #define DEFAULT_PAGE_LAYOUT "default"
 
+#ifndef _WIN32
+	#define _DEFAULT_SOURCE
+	#include <sys/stat.h>
+	#include <dirent.h>
+	#include <unistd.h>
+	#include <signal.h>
+	#include <sys/types.h>
+#else
+	#include <windows.h>
+#endif
+
 #include <assert.h>
 #include <ctype.h>
 #include <errno.h>
@@ -117,7 +128,7 @@ source: https://github.com/hanion/hanion.github.io
 	do {                                                                                           \
 		if ((expected_capacity) > (da)->capacity) {                                                \
 			if ((da)->capacity == 0) {                                                             \
-				(da)->capacity = 128;                                                              \
+				(da)->capacity = 1280;                                                             \
 			}                                                                                      \
 			while ((expected_capacity) > (da)->capacity) {                                         \
 				(da)->capacity *= 2;                                                               \
@@ -155,109 +166,6 @@ typedef struct {
 	char* items;
 	size_t count;
 } StringView;
-
-
-
-#ifndef _WIN32
-	#include <sys/stat.h>
-	#include <dirent.h>
-	#include <unistd.h>
-	#include <signal.h>
-#else
-	#include <windows.h>
-#endif
-
-bool file_exists(const char* path) {
-#ifndef _WIN32
-	return access(path, F_OK) == 0;
-#else
-	DWORD attrs = GetFileAttributesA(path);
-	return (attrs != INVALID_FILE_ATTRIBUTES) && !(attrs & FILE_ATTRIBUTE_DIRECTORY);
-#endif
-}
-
-static inline int execute_line(const char* line) {
-#ifndef _WIN32
-	return system(line);
-#else
-	#define CMD_LINE_MAX 2000
-	char full_command[CMD_LINE_MAX + 16];
-	snprintf(full_command, sizeof(full_command), "cmd /C \"%s\"", line);
-	return system(full_command);
-#endif
-}
-
-
-
-#ifndef _WIN32
-static pid_t g_watcher_pid = -1;
-#else
-static HANDLE g_watcher_proc = NULL;
-#endif
-
-void start_watcher() {
-#ifndef _WIN32
-	g_watcher_pid = fork();
-	if (g_watcher_pid == 0) {
-		execl("./mite", "mite", "--watch", NULL);
-		_exit(1);
-	}
-#else
-	PROCESS_INFORMATION pi;
-	STARTUPINFO si = {0};
-	si.cb = sizeof(si);
-
-	if (CreateProcess(NULL, "mite.exe --watch", NULL, NULL, FALSE,
-				   CREATE_NO_WINDOW, NULL, NULL, &si, &pi)) {
-		g_watcher_proc = pi.hProcess;  // store HANDLE
-		CloseHandle(pi.hThread);       // thread handle not needed
-	}
-#endif
-}
-
-void watch() {
-#ifndef _WIN32
-	execute_line("./mite --incremental");
-	sleep(1);
-#else
-	execute_line("mite.exe --incremental");
-	Sleep(1000);
-#endif
-}
-
-void stop_watcher() {
-#ifndef _WIN32
-	if (g_watcher_pid > 0) {
-		kill(g_watcher_pid, SIGTERM);
-		g_watcher_pid = -1;
-	}
-#else
-	if (g_watcher_proc) {
-		TerminateProcess(g_watcher_proc, 0);
-		CloseHandle(g_watcher_proc);
-		g_watcher_proc = NULL;
-	}
-#endif
-}
-
-static inline int build_and_run_site() {
-#ifndef _WIN32
-	return execute_line("cc -o site site.c && ./site");
-#else
-	return execute_line("gcc -o site.exe site.c && site.exe");
-#endif
-}
-
-static inline void cleanup_site() {
-#ifndef _WIN32
-	remove("site.c");
-	remove("site");
-#else
-	DeleteFileA("site.c");
-	DeleteFileA("site.exe");
-#endif
-}
-
 
 bool read_entire_file(const char* filepath_cstr, StringBuilder* sb) {
 	if (!filepath_cstr || !sb) return false;
@@ -327,7 +235,6 @@ bool write_to_file(const char* filepath_cstr, StringBuilder* sb) {
 	return true;
 }
 
-#define SECOND_STAGE // for development
 #ifdef SECOND_STAGE
 
 static char temp_sprintf_buf[16] = {0};
@@ -561,8 +468,125 @@ char* format_rfc822(const char *ymd) {
 	return out;
 }
 
+
+
+
+
+#else // #ifdef SECOND_STAGE
+
+
+
+
+
+bool file_exists(const char* path) {
+#ifndef _WIN32
+	return access(path, F_OK) == 0;
+#else
+	DWORD attrs = GetFileAttributesA(path);
+	return (attrs != INVALID_FILE_ATTRIBUTES) && !(attrs & FILE_ATTRIBUTE_DIRECTORY);
 #endif
-// --- SECOND STAGE END ---
+}
+
+static inline int execute_line(const char* line) {
+#ifndef _WIN32
+	return system(line);
+#else
+	#define CMD_LINE_MAX 2000
+	char full_command[CMD_LINE_MAX + 16];
+	snprintf(full_command, sizeof(full_command), "cmd /C \"%s\"", line);
+	return system(full_command);
+#endif
+}
+
+
+const char* get_mite_binary_path() {
+	if (file_exists("./mite")) {
+		return "./mite";
+	} else if (file_exists("/usr/bin/mite")) {
+		return "/usr/bin/mite";
+	}
+	return NULL;
+}
+
+
+#ifndef _WIN32
+static pid_t g_watcher_pid = -1;
+#else
+static HANDLE g_watcher_proc = NULL;
+#endif
+
+void start_watcher() {
+#ifndef _WIN32
+	g_watcher_pid = fork();
+	if (g_watcher_pid == 0) {
+		execl(get_mite_binary_path(), "mite", "--watch", NULL);
+		_exit(1);
+	}
+#else
+	PROCESS_INFORMATION pi;
+	STARTUPINFO si = {0};
+	si.cb = sizeof(si);
+
+	if (CreateProcess(NULL, "mite.exe --watch", NULL, NULL, FALSE,
+				   CREATE_NO_WINDOW, NULL, NULL, &si, &pi)) {
+		g_watcher_proc = pi.hProcess;  // store HANDLE
+		CloseHandle(pi.hThread);       // thread handle not needed
+	}
+#endif
+}
+
+void watch_forever_loop() {
+#ifndef _WIN32
+	StringBuilder line = {0};
+	da_append_cstr(&line, get_mite_binary_path());
+	da_append_cstr(&line, " --incremental");
+	da_append(&line, '\0');
+	while (1) {
+		execute_line(line.items);
+		usleep(500000); // 0.5 seconds
+	}
+#else
+	while (1) {
+		execute_line("mite.exe --incremental");
+		Sleep(1000);
+	}
+#endif
+}
+
+void stop_watcher() {
+#ifndef _WIN32
+	if (g_watcher_pid > 0) {
+		kill(g_watcher_pid, SIGTERM);
+		g_watcher_pid = -1;
+	}
+#else
+	if (g_watcher_proc) {
+		TerminateProcess(g_watcher_proc, 0);
+		CloseHandle(g_watcher_proc);
+		g_watcher_proc = NULL;
+	}
+#endif
+}
+
+static inline int build_and_run_site() {
+#ifndef _WIN32
+	return execute_line("cc -o site site.c && ./site");
+#else
+	return execute_line("gcc -o site.exe site.c && site.exe");
+#endif
+}
+
+static inline void cleanup_site() {
+#ifndef _WIN32
+	remove("site.c");
+	remove("site");
+#else
+	DeleteFileA("site.c");
+	DeleteFileA("site.exe");
+#endif
+}
+
+
 
 
 // ------------------- md2html --------------------------
@@ -654,9 +678,9 @@ void parse_inline(MdRenderer* r, const char* line) {
 	}
 
 	const char* p = line;
-	while (*p && *p != '\n') {
+	while (*p && (*p != '\r') && (*p != '\n')) {
 		// double space line break
-		if (p[0] == ' ' && p[1] == ' ' && p[2] == '\n') {
+		if (starts_with(p, "  \n") || starts_with(p, "  \r\n")) {
 			da_append_cstr(r->out, "<br>\n");
 			p += 3;
 			break;
@@ -774,102 +798,101 @@ void render_md_to_html(StringBuilder* md, StringBuilder* out, StringBuilder* out
 #define   end_list() if (r.in_list)  { da_append_cstr(out, "</ul>\n"); r.in_list = false; }
 
 	while (*r.cursor) {
+		while (*r.cursor == ' ' || *r.cursor == '\t' || *r.cursor == '\r') r.cursor++;
+
 		const char* line_end = r.cursor;
 		while (*line_end && *line_end != '\n') line_end++;
 
-		const char* trimmed = r.cursor;
-		while (*trimmed == ' ' || *trimmed == '\t') trimmed++;
-
 		// empty line ends paragraph
-		if (line_end - trimmed == 0) {
+		if (line_end == r.cursor) {
 			end_paragraph();
 			end_list();
 
-		} else if (starts_with(trimmed, "<?")) {
-			const char* end = strstr(trimmed + 2, "?>");
+		} else if (starts_with(r.cursor, "<?")) {
+			const char* end = strstr(r.cursor + 2, "?>");
 			if (end) {
-				da_append_many(out, trimmed, end - trimmed + 2);
+				da_append_many(out, r.cursor, end - r.cursor + 2);
 				r.cursor = end + 2;
 				continue;
 			}
 		
-		} else if (starts_with(trimmed, "---\n")) {
-			if (trimmed != md->items) {
+		} else if (starts_with(r.cursor, "---")) {
+			if (r.cursor != md->items) {
 				da_append_cstr(out, "<hr>");
-				r.cursor = trimmed + 3;
+				r.cursor = r.cursor + 3;
 				continue;
 			}
 
 			// frontmatter
-			const char* end = strstr(trimmed + 4, "---\n");
+			const char* end = strstr(r.cursor + 3, "---");
 			if (end) {
-				trimmed += 3;
+				r.cursor += 3;
 				da_append_cstr(out_fm, "<?");
-				da_append_many(out_fm, trimmed, end - trimmed);
+				da_append_many(out_fm, r.cursor, end - r.cursor);
 				da_append_cstr(out_fm, "?>\n");
 				r.cursor = end + 3;
 				continue;
 			}
 
 		// HTML passthrough
-		} else if (*trimmed == '<') {
+		} else if (*r.cursor == '<') {
 			end_paragraph();
 			end_list();
 
-			const char* html_end_start = search_str_until_newline(trimmed, "</");
+			const char* html_end_start = search_str_until_newline(r.cursor, "</");
 			const char* html_end_end   = search_str_until_newline(html_end_start, ">");
 			if (!html_end_start || !html_end_end) {
-				append_until_newline(out, trimmed);
+				append_until_newline(out, r.cursor);
 			} else {
 				html_end_end++;
-				da_append_many(out, trimmed, html_end_end - trimmed);
+				da_append_many(out, r.cursor, html_end_end - r.cursor);
 				r.cursor = html_end_end;
 				parse_inline(&r, html_end_end);
 			}
 
-		} else if (*trimmed == '#') {
+		} else if (*r.cursor == '#') {
 			end_paragraph();
 			end_list();
 
 			int level = 0;
-			while (*trimmed == '#') { level++; trimmed++; }
-			while (*trimmed == ' ') trimmed++;
+			while (*r.cursor == '#') { level++; r.cursor++; }
+			while (*r.cursor == ' ') r.cursor++;
 
 			char tag[16];
 			sprintf(tag, "h%d", level);
 			da_append_cstr(out, "\n<"); da_append_cstr(out, tag); da_append(out, '>');
-			parse_inline(&r, trimmed);
+			parse_inline(&r, r.cursor);
 			da_append_cstr(out, "</"); da_append_cstr(out, tag); da_append_cstr(out, ">\n");
 
-		} else if (starts_with(trimmed, "- [ ] ")) {
+		} else if (starts_with(r.cursor, "- [ ] ")) {
 			end_paragraph();
 			end_list();
 			da_append_cstr(out, "<ul><li><input type=\"checkbox\" disabled>");
-			parse_inline(&r, trimmed + 6);
+			parse_inline(&r, r.cursor + 6);
 			da_append_cstr(out, "</li></ul>\n");
 
-		} else if (starts_with(trimmed, "- ") || starts_with(trimmed, "* ")) {
+		} else if (starts_with(r.cursor, "- ") || starts_with(r.cursor, "* ")) {
 			end_paragraph();
 			start_list();
 			da_append_cstr(out, "<li>");
-			parse_inline(&r, trimmed + 2);
+			parse_inline(&r, r.cursor + 2);
 			da_append_cstr(out, "</li>\n");
 
-		} else if (starts_with(trimmed, "> ")) {
+		} else if (starts_with(r.cursor, "> ")) {
 			end_paragraph();
 			end_list();
 			da_append_cstr(out, "<blockquote>");
-			parse_inline(&r, trimmed + 2);
+			parse_inline(&r, r.cursor + 2);
 			da_append_cstr(out, "</blockquote>\n");
 
-		} else if (starts_with(trimmed, "```")) {
-			if (trimmed == md->items) {
+		} else if (starts_with(r.cursor, "```")) {
+			if (r.cursor == md->items) {
 				// frontmatter
-				const char* end = strstr(trimmed + 4, "```\n");
+				const char* end = strstr(r.cursor + 3, "```");
 				if (end) {
-					skip_after_newline(&trimmed);
+					skip_after_newline(&r.cursor);
 					da_append_cstr(out_fm, "<?");
-					da_append_many(out_fm, trimmed, end - trimmed);
+					da_append_many(out_fm, r.cursor, end - r.cursor);
 					da_append_cstr(out_fm, "?>\n");
 					r.cursor = end + 3;
 					continue;
@@ -879,26 +902,26 @@ void render_md_to_html(StringBuilder* md, StringBuilder* out, StringBuilder* out
 			end_paragraph();
 			end_list();
 
-			const char* code_end = strstr(trimmed + 3, "```");
+			const char* code_end = strstr(r.cursor + 3, "```");
 			if (!code_end) code_end = md->items + md->count;
 
-			skip_after_newline(&trimmed); // skip language
+			skip_after_newline(&r.cursor); // skip language
 			da_append_cstr(out, "<pre><code>\n");
-			da_append_escape_html(out, trimmed, code_end - trimmed);
+			da_append_escape_html(out, r.cursor, code_end - r.cursor);
 			da_append_cstr(out, "</code></pre>\n");
 
 			r.cursor = code_end + 3;
 			continue;
 
-		} else if (starts_with(trimmed, "![")) {
+		} else if (starts_with(r.cursor, "![")) {
 			// figure
 			end_paragraph();
-			parse_inline(&r, trimmed);
+			parse_inline(&r, r.cursor);
 
 		} else {
 			end_list();
 			start_paragraph();
-			parse_inline(&r, trimmed);
+			parse_inline(&r, r.cursor);
 			da_append(out, '\n');
 		}
 
@@ -908,8 +931,9 @@ void render_md_to_html(StringBuilder* md, StringBuilder* out, StringBuilder* out
 
 	end_paragraph();
 	end_list();
-	da_append(out, '\0');
-	da_append(out_fm, '\0');
+
+	if (out->count)    da_append(out, '\0');
+	if (out_fm->count) da_append(out_fm, '\0');
 
 #undef start_paragraph
 #undef   end_paragraph
@@ -954,13 +978,13 @@ static inline StringView sv_trim(StringView input) {
 	StringView sv = input;
 
 	int l = 0;
-	while (l < sv.count && (sv.items[l] == ' ' || sv.items[l] == '\t' || sv.items[l] == '\n')) l++;
+	while (l < sv.count && (sv.items[l] == ' ' || sv.items[l] == '\t' || sv.items[l] == '\n' || sv.items[l] == '\r')) l++;
 
 	sv.items += l;
 	sv.count -= l;
 
 	int r = sv.count - 1;
-	while (r >= 0 && (sv.items[r] == ' ' || sv.items[r] == '\t' || sv.items[r] == '\n')) r--;
+	while (r >= 0 && (sv.items[r] == ' ' || sv.items[r] == '\t' || sv.items[r] == '\n' || sv.items[r] == '\r')) r--;
 
 	sv.count = r + 1;
 
@@ -978,7 +1002,7 @@ static inline StringView sv_trim_empty_lines(StringView input) {
 	}
 
 	int r = sv.count - 1;
-	while (r >= 0 && (sv.items[r] == ' ' || sv.items[r] == '\t' || sv.items[r] == '\n')) r--;
+	while (r >= 0 && (sv.items[r] == ' ' || sv.items[r] == '\t' || sv.items[r] == '\n' || sv.items[r] == '\r')) r--;
 	sv.count = r + 1;
 
 	return sv;
@@ -1039,12 +1063,18 @@ void byte_array_to_c_code(ByteArray* ba, StringBuilder* out) {
 	da_append_cstr(out, buffer);
 }
 
+char to_hex_char(uint8_t n) {
+	return (n < 10) ? ('0' + n) : ('a' + n - 10);
+}
+
 void sv_to_byte_array(StringView sv, ByteArray* out) {
-	static char buffer[16] = {0};
+	char buffer[4] = { '\\', 'x', 0, 0 };
 	for (uint64_t i = 0; i < sv.count; ++i) {
-		if (sv.items[i] == '\0') break;
-		sprintf(buffer, "\\x%02x", sv.items[i]);
-		da_append_cstr(&out->string, buffer);
+		uint8_t c = (uint8_t)sv.items[i];
+		if (c == '\0') break;
+		buffer[2] = to_hex_char(c >> 4);
+		buffer[3] = to_hex_char(c & 0xF);
+		da_append_many(&out->string, buffer, 4);
 		out->count++;
 	}
 }
@@ -1093,6 +1123,10 @@ bool render_page(MitePage* mite_page) {
 	StringBuilder raw_fm = {0};
 	render_md_to_html(&md, &raw_html, &raw_fm);
 
+	if (raw_fm.count == 0) {
+		printf("[warning] page does not have any front matter! '%s'\n", mite_page->md_path+2);
+	}
+
 	render_html_to_c(SB_TO_SV(&raw_html), &mite_page->rendered_code);
 	render_html_to_c(SB_TO_SV(&raw_fm), &mite_page->front_matter);
 
@@ -1122,28 +1156,6 @@ void render_all(MitePages* pages, MiteTemplates* templates) {
 	}
 }
 
-extern char* strdup(const char*);
-
-MiteTemplate* create_template(MiteTemplates* templates, const char* path) {
-	da_append(templates, (MiteTemplate){0});
-	MiteTemplate* mt = &templates->items[templates->count-1];
-
-	mt->path = strdup(path);
-	mt->name = strdup(mt->path+2);
-	size_t len = strlen(mt->name);
-	if (len > 3 && strcmp(mt->name + len - 3, ".md") == 0) {
-		len -= 3;
-	}
-	mt->name[len] = '\0';
-	for (size_t i = 0; i < len; ++i) {
-		if (!isalnum(mt->name[i])) {
-			mt->name[i] = '_';
-		}
-	}
-	return mt;
-}
-
-
 
 bool ends_with(const char* name, const char* ext) {
 	size_t len = strlen(name);
@@ -1165,6 +1177,7 @@ void join_path(char* out, const char* a, const char* b) {
 }
 
 
+extern char* strdup(const char*);
 void register_mite_file(MiteTemplates* templates, const char* mite_dir, const char* mite_name, bool is_include) {
 	da_append(templates, (MiteTemplate){0});
 	MiteTemplate* mt = &templates->items[templates->count-1];
@@ -1335,14 +1348,11 @@ void search_files(MitePages* pages, MiteTemplates* templates) {
 }
 
 
-void second_stage_extract_header(StringBuilder* out, const char* source_path) {
-	StringBuilder source = {0};
-	if (!read_entire_file(source_path, &source)) exit(1);
-	StringView delim = { .items = "// --- SECOND STAGE END ---", .count = 27 };
-	size_t loc = sv_strstr(SB_TO_SV(&source), delim);
-	da_append_cstr(out, "\n#define SECOND_STAGE\n\n");
-	da_append_many(out, source.items, loc);
-	free(source.items);
+void second_stage_include_header(StringBuilder* out, const char* source_path) {
+	da_append_cstr(out, "#define SECOND_STAGE\n");
+	da_append_cstr(out, "#include \"");
+	da_append_cstr(out, source_path);
+	da_append_cstr(out, "\"\n\n");
 }
 
 void second_stage_codegen(StringBuilder* out, MitePages* pages, MiteTemplates* templates) {
@@ -1529,7 +1539,12 @@ typedef struct {
 } MiteGenerator;
 
 int mite_generate(MiteGenerator* m) {
-	while(m->arg_watch) watch();
+	if (m->arg_watch) watch_forever_loop();
+
+	if (m->pages.count == 0) {
+		printf("[done] nothing to do\n");
+		return 0;
+	}
 
 	bool need_to_render = m->arg_incremental ? check_need_to_render(&m->pages, &m->templates) : true;
 	int result = 0;
@@ -1537,7 +1552,7 @@ int mite_generate(MiteGenerator* m) {
 	if (need_to_render) {
 		render_all(&m->pages, &m->templates);
 
-		second_stage_extract_header(&m->second_stage, m->mite_source_path);
+		second_stage_include_header(&m->second_stage, m->mite_source_path);
 		second_stage_codegen(&m->second_stage, &m->pages, &m->templates);
 		write_to_file("site.c", &m->second_stage);
 		printf("[generated] site\n");
@@ -1553,6 +1568,13 @@ int mite_generate(MiteGenerator* m) {
 
 	if (result == 0 && m->arg_serve) {
 		printf("[serving]\n");
+
+#ifndef _WIN32
+		if (get_mite_binary_path() == NULL) {
+			printf("[error] mite binary not found.\n");
+			return 1;
+		}
+#endif
 		if (!m->arg_no_watcher) start_watcher();
 		execute_line("python -m http.server");
 		if (!m->arg_no_watcher) stop_watcher();
@@ -1562,7 +1584,7 @@ int mite_generate(MiteGenerator* m) {
 }
 
 void free_mite_generator(MiteGenerator* m) {
-	for (size_t i = 1; i < m->pages.count; ++i) {
+	for (size_t i = 0; i < m->pages.count; ++i) {
 		MitePage* page = &m->pages.items[i];
 		free(page->md_path);
 		free(page->name);
@@ -1570,10 +1592,7 @@ void free_mite_generator(MiteGenerator* m) {
 		free(page->rendered_code.items);
 		free(page->front_matter.items);
 	}
-	free(m->pages.items[0].rendered_code.items);
-	free(m->pages.items[0].front_matter.items);
 	free(m->pages.items);
-
 
 	for (size_t i = 0; i < m->templates.count; ++i) {
 		MiteTemplate* t = &m->templates.items[i];
@@ -1588,16 +1607,17 @@ void free_mite_generator(MiteGenerator* m) {
 	free(m->second_stage.items);
 }
 
+#define MITE_VERSION_CSTR "[mite v1.4.3]"
 void print_usage(const char* prog) {
+	printf(MITE_VERSION_CSTR"\n");
 	printf("usage: %s [options]\n", prog);
 	printf("options:\n");
-	printf("  -h, --help       show this help message\n");
+	printf("  --serve          build and serve the site with 'python -m http.server', then run the watcher\n");
+	printf("  --no-watcher     do not start a watcher while serving\n");
+	printf("  --incremental    render only if there are changes\n");
 	printf("  --first-stage    only generate site.c, do not compile or run\n");
 	printf("  --keep           keep the generated site.c file\n");
-	printf("  --serve          serve the site with 'python -m http.server'\n");
-	printf("  --source         path to mite.c source file (default: ./mite.c or /usr/share/mite/mite.c)\n");
-	printf("  --incremental    render if there are changes\n");
-	printf("  --no-watcher     do not start a watcher while serving\n");
+	printf("  --source <PATH>  path to mite.c source file (default: ./mite.c or /usr/share/mite/mite.c)\n");
 }
 
 
@@ -1607,6 +1627,9 @@ int main(int argc, char** argv) {
 	for (int i = 1; i < argc; ++i) {
 		if (strcmp(argv[i], "--help") == 0 || strcmp(argv[i], "-h") == 0) {
 			print_usage(argv[0]);
+			return 0;
+		} else if (0 == strcmp(argv[i], "--version")) {
+			printf(MITE_VERSION_CSTR"\n");
 			return 0;
 		} else if (0 == strcmp(argv[i], "--first-stage")) { m.arg_first_stage = true;
 		} else if (0 == strcmp(argv[i], "--keep"))        { m.arg_keep        = true;
@@ -1632,6 +1655,7 @@ int main(int argc, char** argv) {
 			fprintf(stderr, "[error] mite.c source not found.\n\tplease provide it with --source option.\n");
 			return 1;
 		}
+
 	}
 	if (strlen(m.mite_source_path) < 3) {
 		print_usage(argv[0]);
@@ -1649,3 +1673,4 @@ int main(int argc, char** argv) {
 }
 
 
+#endif // #ifdef SECOND_STAGE #else

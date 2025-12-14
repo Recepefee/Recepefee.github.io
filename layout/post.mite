@@ -7,6 +7,7 @@
 		<meta name="description" content="<? STR(global.description) ?>">
 		<link rel="stylesheet" href="/style.css">
 		<link rel="icon" type="image/png" href="<? STR(global.favicon_path) ?>"/>
+		<? INCLUDE("load_theme") ?>
 	</head>
 	<body>
 		<div class="container">

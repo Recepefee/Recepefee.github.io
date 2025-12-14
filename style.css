@@ -12,6 +12,21 @@
 	--color-accent-active: #4872D1;
 	--max-width: 760px;
 }
+html.alt-theme {
+	--bg: #fbfbf8;
+	--text: #1c140f;
+	--links: #4679f0;
+	--color-accent: #6a32a8;
+	--color-accent-active: #d45500;
+	--color-muted-text: #5a4636;
+	--color-muted-bg: #f2efed;
+	--color-darker-bg: #f0eeea;
+}
+
+html, body, code, pre, figcaption,
+header .date, header .tags, .post-list time {
+	transition: background 0.4s ease, color 0.4s ease;
+}
 
 body {
 	font-family: sans-serif;
