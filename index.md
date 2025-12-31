@@ -29,7 +29,7 @@ ADD_SOCIAL("linkedin", "https://www.linkedin.com/in/recep-efe/");
     <? } ?>
 </ul>
 
-## NASIL?
+## 3N?
 <ul class="post-list">
     <? for (int i = 0; i < global.posts.count; i++) { ?>
         <li>
